@@ -5,6 +5,7 @@ import time
 ## run Ansible scripts
 	
 def execute_ansible(task_name, description, name):
+	pass
 	status, output = commands.getstatusoutput('ansible-playbook Ansible/'+task_name+'_start.yml -i Ansible/tests/'+name+'/hosts --extra-vars "test='+name+'"')
 	if task_name=='dhcp_disable':
 		print 0
