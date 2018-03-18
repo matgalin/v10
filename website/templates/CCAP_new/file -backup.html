@@ -1,0 +1,366 @@
+{% include 'base_start.html' %}
+	<ol class="breadcrumb">
+		<h3><i class="fa fa-fw fa-file"></i>CCAP Configuration: {{ This_CCAP_configuration[0].name }}</h3>
+		<ul class="navbar-nav ml-auto">
+			<a href="#/" class="btn btn-dark" onClick="save()"><i class="fa fa-fw fa-save"></i>SAVE</a>
+		</ul>
+	</ol>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table class="table">
+				<thead>
+					<tr>
+						<th style="width:20%"><input id="mainIds" type="text" name="mainIds" class="form-control" readonly="readonly" hidden>Configuration Name:</th>
+						<th style="width:70%">Description</th>
+						<th style="width:70%">Type</th>
+
+					</tr>
+				</thead>
+				<tbody id="data_table"></tbody>
+			</table>
+		</div>
+		<table class="table borderless">
+				<thead>
+					<tr>
+						<th style="width:30%">Name</th>
+						<th style="width:10%">Nr</th>
+						<th style="width:60%">Content</th>
+					</tr>
+				</thead>
+			</table>
+
+<!-- 			 -->
+<!-- controllerUS			 -->
+			<div class="pull-left">
+				<h5>controller Upstream-Cable</h5>
+			</div>
+			<div class="pull-right">
+				<a href="#/" class="btn btn-dark" onClick="addNew('controllerUS')"><i class="fa fa-fw fa-plus"></i></a>
+			</div>
+			<table class="table borderless">
+				<thead>
+					<tr>
+						<th style="width:30%"></th>
+						<th style="width:10%"></th>
+						<th style="width:60%"></th>
+					</tr>
+				</thead>
+				<tbody id="controllerUS">
+			</table>
+			
+			<table class="table" id="controllerUS_select" style="display:none;">
+				<tbody>
+					<td style="width:20%">
+						<select class="form-control" size="1" id="controllerUS_select_file" onchange="changeFile('controllerUS')">
+							<option value="Choose one" selected>Choose one</option>
+						</select>
+					</td>
+					<td style="width:80%">
+						<select class="form-control" size="1" id="controllerUS_select_part" onchange="changePart('controllerUS')">
+						</select>
+					</td>
+				</tbody>
+			</table>
+<!-- controllerDS			 -->	
+			<div class="pull-left">
+				<h5>controller Integrated-Cable</h5>
+			</div>
+			<div class="pull-right">
+				<a href="#/" class="btn btn-dark" onClick="addNew('controllerDS')"><i class="fa fa-fw fa-plus"></i></a>
+			</div>
+			<table class="table borderless">
+				<thead>
+					<tr>
+						<th style="width:30%"></th>
+						<th style="width:10%"></th>
+						<th style="width:60%"></th>
+					</tr>
+				</thead>
+				<tbody id="controllerDS">
+			</table>
+
+			<table class="table" id="controllerDS_select" style="display:none;">
+				<tbody>
+					<td style="width:20%">
+						<select class="form-control" size="1" id="controllerDS_select_file" onchange="changeFile('controllerDS')">
+							<option value="Choose one" selected>Choose one</option>
+						</select>
+					</td>
+					<td style="width:80%">
+						<select class="form-control" size="1" id="controllerDS_select_part" onchange="changePart('controllerDS')">
+						</select>
+					</td>
+				</tbody>
+			</table>			
+<!-- cable			 -->	
+			<div class="pull-left">
+				<h5>interface Cable</h5>
+			</div>
+			<div class="pull-right">
+				<a href="#/" class="btn btn-dark" onClick="addNew('cable')"><i class="fa fa-fw fa-plus"></i></a>
+			</div>
+			<table class="table borderless">
+				<thead>
+					<tr>
+						<th style="width:30%"></th>
+						<th style="width:10%"></th>
+						<th style="width:60%"></th>
+					</tr>
+				</thead>
+				<tbody id="cable">
+			</table>
+
+			<table class="table" id="cable_select" style="display:none;">
+				<tbody>
+					<td style="width:20%">
+						<select class="form-control" size="1" id="cable_select_file" onchange="changeFile('cable')">
+							<option value="Choose one" selected>Choose one</option>
+						</select>
+					</td>
+					<td style="width:80%">
+						<select class="form-control" size="1" id="cable_select_part" onchange="changePart('cable')">
+						</select>
+					</td>
+				</tbody>
+			</table>		
+<!-- wideband			 -->	
+			<div class="pull-left">
+				<h5>interface Wideband-Cable</h5>
+			</div>
+			<div class="pull-right">
+				<a href="#/" class="btn btn-dark" onClick="addNew('wideband')"><i class="fa fa-fw fa-plus"></i></a>
+			</div>
+			<table class="table borderless">
+				<thead>
+					<tr>
+						<th style="width:30%"></th>
+						<th style="width:10%"></th>
+						<th style="width:60%"></th>
+				</thead>
+				<tbody id="wideband">
+			</table>
+			<table class="table" id="wideband_select" style="display:none;">
+				<tbody>
+					<td style="width:20%">
+						<select class="form-control" size="1" id="wideband_select_file" onchange="changeFile('wideband')">
+							<option value="Choose one" selected>Choose one</option>
+						</select>
+					</td>
+					<td style="width:80%">
+						<select class="form-control" size="1" id="wideband_select_part" onchange="changePart('wideband')">
+						</select>
+					</td>
+				</tbody>
+			</table>		
+<!-- fibernode			 -->	
+			<div class="pull-left">
+				<h5>cable Fiber-Node</h5>
+			</div>
+			<div class="pull-right">
+				<a href="#/" class="btn btn-dark" onClick="addNew('fibernode')"><i class="fa fa-fw fa-plus"></i></a>
+			</div>
+			<table class="table borderless">
+				<thead>
+					<tr>
+						<th style="width:30%"></th>
+						<th style="width:10%"></th>
+						<th style="width:60%"></th>
+					</tr>
+				</thead>
+				<tbody id="fibernode">
+			</table>
+			<table class="table" id="fibernode_select" style="display:none;">
+				<tbody>
+					<td style="width:20%">
+						<select class="form-control" size="1" id="fibernode_select_file" onchange="changeFile('fibernode')">
+							<option value="Choose one" selected>Choose one</option>
+						</select>
+					</td>
+					<td style="width:80%">
+						<select class="form-control" size="1" id="fibernode_select_part" onchange="changePart('fibernode')">
+						</select>
+					</td>
+				</tbody>
+			</table>			
+			
+			
+			
+			
+		</div>
+	
+       
+ {% include 'base_end.html' %}     
+<script>
+//Get Data from database
+document.getElementById("link_ccap_new").classList.add("active");
+var CCAP_part = JSON.parse('{{ CCAP_part | tojson }}');
+var CCAP_configuration_new = JSON.parse('{{ CCAP_configuration_new | tojson }}');
+var This_CCAP_configuration = JSON.parse('{{ This_CCAP_configuration | tojson }}');
+//Global Variable; textarea nr
+textAreaId=1;
+var down='down';
+var up='up';
+var list = [
+			{ value: 'controllerUS', name: 'controller Upstream-Cable'},
+			{ value: 'controllerDS', name: 'controller Integrated-Cable'},
+			{ value: 'cable', name: 'interface Cable'},
+			{ value: 'wideband', name: 'interface Wideband-Cable'},
+			{ value: 'fibernode', name: 'cable Fiber-Node'},
+			];
+//Add Global Data from Database to Page
+$(document).ready(function(){
+	$('#data_table').append(''+
+		'<tr>'+
+			'<td><div class="form-group"><input type="text" name="ccap_name" value="'+This_CCAP_configuration[0].name+'" class="form-control"></td></div>'+
+			'<td><div class="form-group"><input type="text" name="ccap_description" value="'+This_CCAP_configuration[0].description+'" class="form-control"></div></td>'+
+			'<td><div class="form-group"><input type="text" name="ccap_type" value="'+This_CCAP_configuration[0].type+'" class="form-control"></div></td>'+
+		'</tr>');
+	for (var j = 0; j < CCAP_configuration_new.length; j++) {
+		for (var i = 0; i < list.length; i++) {
+			$('#'+list[i].value+'_select_file').append('<option value="'+CCAP_configuration_new[j].id+'">'+CCAP_configuration_new[j].name+'</option>');
+		}
+	}
+})
+//Add Parts Data from Database to Page
+			 -->
+$(document).ready(function(){
+	for (var j = 0; j < list.length; j++) {
+		for (var i = 0; i < CCAP_part.length; i++) {
+			if (CCAP_part[i].configuration_id==This_CCAP_configuration[0].id && CCAP_part[i].name==list[j].name) {
+				createTextArea(textAreaId, CCAP_part[i].name, CCAP_part[i].nr, CCAP_part[i].content, list[j].value);
+			}
+		}
+	}
+	//tester_up_down_active();
+})
+
+//Reacting on changing options_part
+function changeFile(value) {
+	//get selected File
+	var x = document.getElementById(value+"_select_file").selectedIndex;
+	var select_id = document.getElementById(value+"_select_file").getElementsByTagName("option")[x].value;
+	//clear options_part
+	$('#'+value+'_select_part').html('');
+	if (select_id!='Choose one'){
+		//if selected empty
+		//if (select_id=='Empty') {
+			//createTextArea(textAreaId, '', '');
+		//document.getElementById('text_area_'+(textAreaId-1).toString()).setAttribute('class', 'table-info');
+			//$('#options_part_file').val('Choose one').change();
+			
+			//}
+		//if selected is not empty
+		//else {
+			$('#'+value+'_select_part').append('<option value="Choose one" selected>Choose one</option>');
+			for (var k = 0; k < list.length; k++) {
+				if (value==list[k].value) {
+					var name=list[k].name;
+				}
+			}
+				for (var j = 0; j < CCAP_part.length; j++) {
+					
+					if (CCAP_part[j].configuration_id==select_id && CCAP_part[j].name==name) {
+						$('#'+value+'_select_part').append('<option value="'+CCAP_part[j].id+'">'+CCAP_part[j].name+' '+CCAP_part[j].nr+'</option>');
+				//}
+				}
+			}
+		
+	}
+	//tester_up_down_active();
+}
+//Adding new TextAreas
+function changePart(value) {
+	//var mainTextArea = document.getElementById('mainTextArea');
+	//var mainInput = document.getElementById('mainInput');
+	//get selected Part
+	var x = document.getElementById(value+"_select_part").selectedIndex;
+	var select_id = document.getElementById(value+"_select_part").getElementsByTagName("option")[x].value;
+	if (select_id!='Choose one'){
+		for (var i = 0; i < CCAP_part.length; i++){
+			if (CCAP_part[i].id == select_id){	
+				createTextArea(textAreaId, CCAP_part[i].name, '', CCAP_part[i].content, value);
+				document.getElementById('text_area_'+(textAreaId-1).toString()).setAttribute('class', 'table-info');
+				$('#'+value+"_select_part").val('Choose one').change();
+				document.getElementById(value+'_select').style.display = "none";
+			}
+		}
+	}
+	//tester_up_down_active();
+}
+//creating text areas
+function createTextArea(id, name, nr, content, value) {
+//variables
+	$('#'+value).append(''+
+		'<tr class="table-dark" id="text_area_'+id+'">'+
+		'<td>'+
+		'<input name="myTextArea_'+id+'_name" type="text" class="form-control" value="'+name+'" readonly>'+
+		'</td>'+
+		'<td>'+
+		'<input name="myTextArea_'+id+'_nr" type="text" class="form-control" value="'+nr+'">'+
+		'</td>'+
+		'<td>'+
+		'<textarea onkeyup="textAreaAdjust(this)" id="myTextArea_'+id+'" name="myTextArea_'+id+'" class="form-control"">'+content+'</textarea>'+
+		'</td>'+
+		'<td>'+
+		'<a href="#/" class="btn btn-dark" onClick="removeThis('+id+')"><i class="fa fa-fw fa-minus"></i></a>'+
+		//'<a href="#/" id="up_'+id+'" class="btn btn-dark" onClick="swapContent('+id+','+up+')"><i class="fa fa-fw fa-arrow-up"></i></a>'+
+		//'<a href="#/" id="down_'+id+'" class="btn btn-dark" onClick="swapContent('+id+','+down+')"><i class="fa fa-fw fa-arrow-down"></i></a>'+
+		'</td></tr>');
+	textArea=document.getElementById('myTextArea_'+id);
+	textArea.style.height = "1px";
+	textArea.style.height = (25+textArea.scrollHeight)+"px";
+	textAreaId=textAreaId+1;
+}
+
+
+function addNew(value){
+	document.getElementById(value+'_select').style.display = "block";
+}
+//get list of rows
+function tester_up_down() {
+	var listOfObjects = [];
+	var dates = document.querySelectorAll('*[id^="text_area_"]');
+		for (var i = 0; i < dates.length; i++){
+		var singleObj = {}
+		singleObj['name']=dates[i].id
+		listOfObjects.push(singleObj);
+	}
+	let names = listOfObjects.map(item => item.name);
+	return names.join();
+}
+//Getting IDS of added TextAreas
+function tester_list() {
+	var listOfObjects = [];
+	var dates = document.querySelectorAll('*[id^="myTextArea_"]');
+		for (var i = 0; i < dates.length; i++){
+		var singleObj = {}
+		singleObj['name']=dates[i].id
+		listOfObjects.push(singleObj);
+	}
+	let names = listOfObjects.map(item => item.name);
+	document.getElementById("mainIds").value=names.join();
+}
+//hiding buttons
+
+
+
+//Adjust TextArea size
+function textAreaAdjust(o) {
+	o.style.height = "1px";
+	o.style.height = (25+o.scrollHeight)+"px";
+}
+
+//Removing Text Area
+function removeThis(div_id) {
+	var element = document.getElementById('text_area_'+div_id);
+	document.getElementById('text_area_'+div_id).remove();
+
+}
+//Save config file
+function save() {
+	tester_list();
+	document.getElementById("post").action="/update/CCAPfile";
+	document.getElementById("post").submit();
+}
+
+</script>

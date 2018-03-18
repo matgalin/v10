@@ -25,6 +25,7 @@ import time_conversion as time_conversion
 import generate_report as report
 from datetime import date
 from datetime import datetime
+import ccap_data as ccap_data
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -98,7 +99,8 @@ def TESTdata():
 def CCAPdatanew():	
 	CCAP_configuration=db_get.CCAP_configuration_new('all') ## get all CCAP data
 	return render_template('CCAP_new/data.html', 
-	CCAP_configuration=CCAP_configuration)	
+	CCAP_configuration=CCAP_configuration,
+	ccap_data=ccap_data)	
 ########################################################################################################
 #######################################################################################################
 ####################################################################################################### SHOW DATA specified by ID
@@ -114,7 +116,8 @@ def CCAPfile(id):
 	return render_template('CCAP_new/file.html', 
 	CCAP_part=CCAP_part,
 	This_CCAP_configuration=This_CCAP_configuration,
-	CCAP_configuration_new=CCAP_configuration_new)	
+	CCAP_configuration_new=CCAP_configuration_new,
+	ccap_data=ccap_data)	
 ##### CM File configuration	
 @app.route('/CM/file/<id>')
 def CMfile(id):
