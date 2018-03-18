@@ -1,0 +1,68 @@
+{% include 'base_start.html' %}
+	<ol class="breadcrumb">
+		<h3><i class="fa fa-fw fa-file"></i>Cable Modem Files</h3>
+		<ul class="navbar-nav ml-auto">
+			<a href="#/" class="btn btn-dark" onClick="save()"><i class="fa fa-fw fa-save"></i>SAVE</a>
+		</ul>
+	</ol>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="data" class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th style="width:30%">File Name:</th>
+						<th style="width:60%">Description</th>
+						<th style="width:1%"><a id="group_show_new_button" href="#/" class="btn btn-dark" onClick="group_show_new()"><i class="fa fa-fw fa-plus"></i></a></th>
+					</tr>
+				</thead>
+				<tbody id="group_data_table"></tbody>
+			</table>
+		</div>
+	</div>
+      
+ {% include 'base_end.html' %}     
+<script>
+document.getElementById("link_cm").classList.add("active");
+//Get Data from database
+var content = JSON.parse('{{ CM_configuration | tojson }}');
+//Add Data to Table
+$(document).ready(function(){
+	for (var i = 0; i < content.length; i++) {
+		$('#group_data_table').append(''+
+			'<tr>'+
+				'<td><a href="/CM/file/'+content[i].id+'">'+content[i].name+'</a></td>'+
+				'<td>'+content[i].description+'</td>'+
+				'<td><a href="#/" class="btn btn-dark" onClick="group_remove_conf(\''+content[i].id+'\', \''+content[i].name+'\')"><i class="fa fa-fw fa-minus"></i></a></td>'+
+			'</tr>');
+	}
+})
+//Create new config file
+function group_show_new() {
+	document.getElementById("group_show_new_button").classList.add("disabled");
+	$('#group_data_table').prepend(''+
+		'<tr id="group_new_conf" >'+
+			'<td><input type="text" name="group_configuration" class="form-control"></td>'+
+			'<td><input type="text" name="group_description" class="form-control"></td>'+
+			'<td><a href="#/" class="btn btn-dark" onClick="group_delete()"><i class="fa fa-fw fa-minus"></i></a></td>'+
+		'</tr>');
+}
+//remove created config file
+function group_delete() {
+	document.getElementById("group_show_new_button").classList.remove("disabled");
+	document.getElementById("group_new_conf").remove();
+}
+
+//Save created config file
+function save() {
+	document.getElementById("post").action="/insert/CMfile";
+	document.getElementById("post").submit();
+}
+//remove config file
+function group_remove_conf(id, name) {
+	if (window.confirm("Are you sure you want to remove Cable Modem Configuration File \""+name+"\"? This will effect all childreen!")) {
+		document.getElementById("post").action="/delete/CMfile/"+id;
+		document.getElementById("post").submit();
+	}
+}
+
+</script> 

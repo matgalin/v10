@@ -1,0 +1,15 @@
+- name: create directory for config files on localhost server
+  file:
+    path: "{{script_dir}}/tests/{{test}}/binaries/"
+    state: directory
+    mode: 0766
+- name: create directory for kea files on localhost server
+  file:
+    path: "{{script_dir}}/tests/{{test}}/kea/"
+    state: directory
+    mode: 0766
+- name: create key file on localhost server
+  copy:
+    content: "VT"
+    dest: "{{script_dir}}/tests/{{test}}/configs/key"
+    mode: 0766 

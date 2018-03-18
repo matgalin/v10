@@ -1,0 +1,293 @@
+{% include 'base_start.html' %}
+	<ol class="breadcrumb">
+		<h3><i class="fa fa-fw fa-file"></i>Cable Modem Configuration: {{ This_CM_configuration[0].group }}</h3>
+		<ul class="navbar-nav ml-auto">
+			<a href="#/" class="btn btn-dark" onClick="save()"><i class="fa fa-fw fa-save"></i>SAVE</a>
+		</ul>
+	</ol>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table class="table">
+				<thead>
+					<tr>
+						<th style="width:20%"><input id="mainIds" type="text" name="mainIds" class="form-control" readonly="readonly" hidden>Configuration Name:</th>
+						<th style="width:80%">Description</th>
+
+					</tr>
+				</thead>
+				<tbody id="data_table"></tbody>
+			</table>
+			<table class="table borderless">
+				<thead>
+					<tr>
+						<th style="width:20%">Name</th>
+						<th style="width:80%">Content</th>
+					</tr>
+				</thead>
+				<tbody id="textAreas">
+					<tr class="table-dark" id="text_area_start">
+						<td> 	
+						</td>
+						<td>
+						<textarea rows="1" class="form-control" readonly>Main {</textarea>
+						</td>
+						<td>
+						</td>
+					</tr>
+					<tr class="table-dark" id="text_area_end">
+						<td> 
+						</td>
+						<td>
+						<textarea rows="1" class="form-control" readonly>}</textarea>
+						</td>
+						<td>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table">
+				<tbody>
+					<td style="width:20%">
+						<select class="form-control" size="10" id="options_part_file" onchange="changeFile()">
+							<option value="Choose one" selected>Choose one</option>
+							<option value="Empty">Empty</option>
+						</select>
+					</td>
+					<td style="width:80%">
+						<select class="form-control" size="10" id="options_part" onchange="changePart()">
+						</select>
+					</td>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+       
+ {% include 'base_end.html' %}     
+<script>
+//Get Data from database
+document.getElementById("link_cm").classList.add("active");
+var CM_Part = JSON.parse('{{ CM_part | tojson }}');
+var CM_configuration = JSON.parse('{{ CM_configuration | tojson }}');
+var This_CM_configuration = JSON.parse('{{ This_CM_configuration | tojson }}');
+//Global Variable; textarea nr
+textAreaId=1;
+var down='down';
+var up='up';
+//Add Global Data from Database to Page
+$(document).ready(function(){
+	$('#data_table').append(''+
+		'<tr>'+
+			'<td><div class="form-group"><input type="text" name="group_name" value="'+This_CM_configuration[0].name+'" class="form-control"></td></div>'+
+			'<td><div class="form-group"><input type="text" name="group_description" value="'+This_CM_configuration[0].description+'" class="form-control"></div></td>'+
+		'</tr>');
+	for (var j = 0; j < CM_configuration.length; j++) {
+		$('#options_part_file').append('<option value="'+CM_configuration[j].id+'">'+CM_configuration[j].name+'</option>');
+	}
+})
+//Add Parts Data from Database to Page
+$(document).ready(function(){
+	for (var i = 0; i < CM_Part.length; i++) {
+		if (CM_Part[i].configuration_id==This_CM_configuration[0].id) {
+			createTextArea(textAreaId, CM_Part[i].name, CM_Part[i].content);
+		}
+	}
+	tester_up_down_active();
+})
+
+//Reacting on changing options_part
+function changeFile() {
+	//get selected File
+	var x = document.getElementById("options_part_file").selectedIndex;
+	var select_id = document.getElementById("options_part_file").getElementsByTagName("option")[x].value;
+	//clear options_part
+	$('#options_part').html('');
+	if (select_id!='Choose one'){
+		//if selected empty
+		if (select_id=='Empty') {
+			createTextArea(textAreaId, '', '');
+			document.getElementById('text_area_'+(textAreaId-1).toString()).setAttribute('class', 'table-info');
+			$('#options_part_file').val('Choose one').change();
+			
+			}
+		//if selected is not empty
+		else {
+			$('#options_part').append('<option value="Choose one" selected>Choose one</option>');
+			for (var i = 0; i < CM_Part.length; i++) {
+				if (CM_Part[i].configuration_id==select_id) {
+					$('#options_part').append('<option value="'+CM_Part[i].id+'">'+CM_Part[i].name+'</option>');
+				}
+			}
+		}
+	}
+	tester_up_down_active();
+}
+//Adding new TextAreas
+function changePart() {
+	//var mainTextArea = document.getElementById('mainTextArea');
+	//var mainInput = document.getElementById('mainInput');
+	//get selected Part
+	var x = document.getElementById("options_part").selectedIndex;
+	var select_id = document.getElementById("options_part").getElementsByTagName("option")[x].value;
+	if (select_id!='Choose one'){
+		for (var i = 0; i < CM_Part.length; i++){
+			if (CM_Part[i].id == select_id){	
+				createTextArea(textAreaId, CM_Part[i].name, CM_Part[i].content);
+				document.getElementById('text_area_'+(textAreaId-1).toString()).setAttribute('class', 'table-info');
+				$('#options_part').val('Choose one').change();
+			}
+		}
+	}
+	tester_up_down_active();
+}
+//creating text areas
+function createTextArea(id, name, content) {
+//variables
+	$(''+
+		'<tr class="table-dark" id="text_area_'+id+'">'+
+		'<td>'+
+		'<input name="myTextArea_'+id+'_name" type="text" name="mainIds" class="form-control" value="'+name+'">'+
+		'</td>'+
+		'<td>'+
+		'<textarea onkeyup="textAreaAdjust(this)" id="myTextArea_'+id+'" name="myTextArea_'+id+'" class="form-control"">'+content+'</textarea>'+
+		'</td>'+
+		'<td>'+
+		'<a href="#/" class="btn btn-dark" onClick="removeThis('+id+')"><i class="fa fa-fw fa-minus"></i></a>'+
+		'<a href="#/" id="up_'+id+'" class="btn btn-dark" onClick="swapContent('+id+','+up+')"><i class="fa fa-fw fa-arrow-up"></i></a>'+
+		'<a href="#/" id="down_'+id+'" class="btn btn-dark" onClick="swapContent('+id+','+down+')"><i class="fa fa-fw fa-arrow-down"></i></a>'+
+		'</td></tr>').insertBefore('#text_area_end');
+	textArea=document.getElementById('myTextArea_'+id);
+	textArea.style.height = "1px";
+	textArea.style.height = (25+textArea.scrollHeight)+"px";
+	textAreaId=textAreaId+1;
+}
+//swap text areas up/down
+function swapContent(parent_id, type){
+	id_list=tester_up_down();
+	parent_id='text_area_'+parent_id
+	var split_list=[];
+	split_list = id_list.split(",");
+	parent_content=document.getElementById(parent_id).innerHTML;
+	parent_class=document.getElementById(parent_id).getAttribute('class');
+	var k;
+	for (var i = 0; i < split_list.length; i++) {
+		if (split_list[i]==parent_id) {
+			k=i;
+		}
+	}
+	if (type=='down') {
+		if (k<split_list.length-2) {
+		second_id=split_list[k+1];
+		second_content=document.getElementById(second_id).innerHTML;
+		second_class=document.getElementById(second_id).getAttribute('class');
+		document.getElementById(parent_id).innerHTML='';
+		document.getElementById(second_id).innerHTML='';
+		document.getElementById(parent_id).innerHTML=second_content;
+		document.getElementById(second_id).innerHTML=parent_content;
+		document.getElementById(second_id).setAttribute("class", parent_class);
+		document.getElementById(second_id).setAttribute("id", parent_id);
+		document.getElementById(parent_id).setAttribute("class", second_class);
+		document.getElementById(parent_id).setAttribute("id", second_id);
+		
+		}
+	}
+	if (type=='up') {
+		if (k>1) {
+		second_id=split_list[k-1];
+		second_content=document.getElementById(second_id).innerHTML;
+		second_class=document.getElementById(second_id).getAttribute('class');
+		document.getElementById(parent_id).innerHTML='';
+		document.getElementById(second_id).innerHTML='';
+		document.getElementById(parent_id).innerHTML=second_content;
+		document.getElementById(second_id).innerHTML=parent_content;
+		document.getElementById(parent_id).setAttribute("class", second_class);
+		document.getElementById(parent_id).setAttribute("id", second_id);
+		document.getElementById(second_id).setAttribute("class", parent_class);
+		document.getElementById(second_id).setAttribute("id", parent_id);
+		
+		}
+	}
+	tester_up_down_active();
+}
+//get list of rows
+function tester_up_down() {
+	var listOfObjects = [];
+	var dates = document.querySelectorAll('*[id^="text_area_"]');
+		for (var i = 0; i < dates.length; i++){
+		var singleObj = {}
+		singleObj['name']=dates[i].id
+		listOfObjects.push(singleObj);
+	}
+	let names = listOfObjects.map(item => item.name);
+	return names.join();
+}
+//Getting IDS of added TextAreas
+function tester_list() {
+	var listOfObjects = [];
+	var dates = document.querySelectorAll('*[id^="myTextArea_"]');
+		for (var i = 0; i < dates.length; i++){
+		var singleObj = {}
+		singleObj['name']=dates[i].id
+		listOfObjects.push(singleObj);
+	}
+	let names = listOfObjects.map(item => item.name);
+	document.getElementById("mainIds").value=names.join();
+}
+//hiding buttons
+function tester_up_down_active() {
+	var listOfObjects = [];
+	var dates_up = document.querySelectorAll('*[id^="up_"]');
+		for (var i = 0; i < dates_up.length; i++){
+		var singleObj = {}
+		singleObj['name']=dates_up[i].id
+		listOfObjects.push(singleObj);
+	}
+	let names_up = listOfObjects.map(item => item.name);
+	for (var i = 0; i < names_up.length; i++){
+		if (i==0) {
+		document.getElementById(names_up[i]).style.display="none";
+		}
+		else {
+		document.getElementById(names_up[i]).style.display="block";
+		}
+	}
+	var listOfObjects = [];
+	var dates_down = document.querySelectorAll('*[id^="down_"]');
+		for (var i = 0; i < dates_down.length; i++){
+		var singleObj = {}
+		singleObj['name']=dates_down[i].id
+		listOfObjects.push(singleObj);
+	}
+	let names_down = listOfObjects.map(item => item.name);
+	for (var i = 0; i < names_down.length; i++){
+		if (i==names_down.length-1) {
+		document.getElementById(names_down[i]).style.display="none";
+		}
+		else {
+		document.getElementById(names_down[i]).style.display="block";
+		}
+	}
+}
+
+
+
+//Adjust TextArea size
+function textAreaAdjust(o) {
+	o.style.height = "1px";
+	o.style.height = (25+o.scrollHeight)+"px";
+}
+
+//Removing Text Area
+function removeThis(div_id) {
+	var element = document.getElementById('text_area_'+div_id);
+	document.getElementById('text_area_'+div_id).remove();
+
+}
+//Save config file
+function save() {
+	tester_list();
+	document.getElementById("post").action="/update/CMfile";
+	document.getElementById("post").submit();
+}
+
+</script>

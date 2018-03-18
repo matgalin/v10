@@ -1,0 +1,77 @@
+# .----------------.  .----------------. 
+#| .--------------. || .--------------. |
+#| | ____   ____  | || |  _________   | |
+#| ||_  _| |_  _| | || | |  _   _  |  | |
+#| |  \ \   / /   | || | |_/ | | \_|  | |
+#| |   \ \ / /    | || |     | |      | |
+#| |    \ ' /     | || |    _| |_     | |
+#| |     \_/      | || |   |_____|    | |
+#| |              | || |              | |
+#| '--------------' || '--------------' |
+# '----------------'  '----------------' 
+# The whole configuration starts here.
+{
+# DHCPv6 specific configuration starts here.
+"Dhcp6": {
+	"interfaces-config": {
+		"interfaces": [ "ens192.666/FC66::16" ],
+		"dhcp-socket-type": "udp"
+						},
+	"valid-lifetime": 400000,
+	"renew-timer": 100000,
+	"rebind-timer": 200000,
+#----------------------------------------------------------------------- Siec pod CM
+	"subnet6":
+	[{
+		"pools": [ { "pool": "{{pool_start6}}-{{pool_stop6}}" }],
+		"subnet": "{{routers6}}/{{mask6}}",
+		"option-data":
+		[
+			{"name": "tftp-servers","space": "vendor-4491",
+			"data": "{{tftp_server6}}"},
+			{"name": "time-servers","space": "vendor-4491",
+			"data": "{{time_server6}}"},
+			{"name": "time-offset", "space": "vendor-4491",
+			"data": "-3600"}
+		],
+		"reservations": [
+{% for item in config_files %}
+			{ #MAC:{{item.mac}}
+			"hw-address":"{{item.mac}}",
+{% if item.ip6 is defined %}
+			"ip-addresses":"{{item.ip6}}",
+{% endif %}
+{% if item.routers is defined or item.time is defined or item.mac is defined%}
+			"option-data": [
+{% if item.time6 is defined %}
+
+				{ "name": "time-servers", "space": "vendor-4491", "data": "{{item.time6}}" },
+{% endif %}
+{% if item.routers6 is defined %}
+
+				{ "name": "routers", "space": "vendor-4491", "data": "{{item.routers6}}" },
+{% endif %}
+{% if item.mac is defined %}
+
+				{ "name": "config-file", "space": "vendor-4491", "data": "{{test_name}}/binaries/{{item.mac}}" }
+{% endif %}						],
+{% endif %}
+			}{% if not loop.last %},
+{% endif %}
+{% endfor %}
+		
+		
+		
+		]
+	}
+	
+]},
+# DHCPv6 specific configuration ends here. Logger parameters (that could be shared among several components) start here. This section is used by both the DHCPv4 and DHCPv6 servers.
+"Logging": {
+   "loggers": [{
+        "name": "*",
+        "severity": "DEBUG"
+    }]
+}
+# Logger parameters end here. The whole configuration structure ends here.
+}

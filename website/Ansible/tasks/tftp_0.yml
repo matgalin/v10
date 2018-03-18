@@ -1,0 +1,17 @@
+- name: create directory for config files on tftp server
+  file:
+    path: "{{tftp_dir}}/{{test}}"
+    state: directory
+    mode: 0766
+- name: also create directory for config files on tftp server
+  file:
+    path: "{{tftp_dir}}/{{test}}/binaries"
+    state: directory
+    mode: 0766
+- name: create directory for config files on dhcp server
+  file:
+    path: "{{dhcp_dir}}/{{test}}"
+    state: directory
+    mode: 0766
+    
+    

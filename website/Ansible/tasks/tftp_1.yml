@@ -1,0 +1,20 @@
+- name: copy config binaries to tftp server
+  copy:
+    src: "{{script_dir}}/tests/{{test}}/binaries/{{item.config_file}}.bin"
+    dest: "{{tftp_dir}}/{{test}}/binaries/{{item.config_file}}.bin"
+    force: yes
+    mode: 0770
+  with_items: "{{config_files}}"
+  
+- name: copy default config file to tftp server
+  copy:
+    src: "{{script_dir}}/tests/{{test}}/binaries/{{default_config_file}}.bin"
+    dest: "{{tftp_dir}}/{{test}}/binaries/{{default_config_file}}.bin"
+    force: yes
+    mode: 0770
+  when: default_config_file is defined
+
+- name: set files privilages
+  shell: "chmod -R 777 {{tftp_dir}}"
+- name: set files privilages
+  shell: "chown -R nobody {{tftp_dir}}"

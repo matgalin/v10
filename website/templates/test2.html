@@ -1,0 +1,115 @@
+{% include 'base_start.html' %}
+      <!-- Breadcrumbs-->
+	  
+	  
+
+
+
+    
+<table class="table borderless">
+				<thead>
+					<tr>
+						<th style="width:30%"></th>
+						<th style="width:70%"></th>
+					</tr>
+				</thead>
+				<tbody id="status_content">
+			</table>
+
+<form class="form-signin" action="/signUp" method="post" role="form">
+			<div id="testdiv"></div>
+             <button class="btn btn-lg btn-primary btn-block" type="button">Register </button>
+         </form>
+ 
+{% include 'base_end.html' %}     
+<script>
+var current_data;
+var start=0;
+var interval;
+$(function() {
+    $('button').click(function() {
+        //var user = $('#txtUsername').val();
+        //var pass = $('#txtPassword').val();
+        $.ajax({
+            url: '/test2/',
+            data: '',
+            type: 'POST',
+            success: function(response) {
+                console.log(response);
+				setTimeout(function () {
+				interval=setInterval(refresh_function, 500);
+				}, 200);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
+function refresh_function() {
+
+$.ajax({
+            url: '/test2/',
+			async: false,
+            data: '',
+            type: 'POST',
+            success: function(response) {
+				var full_content=JSON.parse(response);
+				var finish=full_content.response.status;
+				//var finish=data.response.status;
+				//var finish=JSON.parse(response.response.status);
+                //console.log(current_data.response);
+				if (start==0) {
+					current_data=full_content.response.content;
+					for (var i = 0; i < current_data.length; i++) {
+						createNextStatus(current_data[i].id, current_data[i].name, current_data[i].status, current_data[i].flag);
+					}
+					start=1;
+				}
+				else if (start==1) {
+					var new_data=full_content.response.content;
+					var current_data_length=current_data.length;
+					var new_data_length=new_data.length;
+					if (current_data_length!=new_data_length) {
+					
+						for (var i = current_data_length; i < new_data_length; i++) {
+							createNextStatus(new_data[i].id, new_data[i].name, new_data[i].status, new_data[i].flag);
+						current_data=full_content.response.content;
+						}
+					window.scrollTo(0,document.body.scrollHeight);
+					}
+				}
+				if (finish==2) {
+				clearInterval(interval);
+				}
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+}
+function createNextStatus(id, name, status, flag) {
+	var color;
+	if (flag==1){
+		color='table-danger'
+	}
+	else if (flag==0){
+		color='table-success'
+	}
+	else if (flag==2){
+		color='table-dark'
+	}
+	$('#status_content').append(''+
+		'<tr class="'+color+'" id="status_'+id+'">'+
+			'<td>'+
+				'<input class="form-control" value="'+name+'" readonly></input>'+
+			'</td>'+
+			'<td>'+			
+				'<textarea id="myTextArea_'+id+'" name="myTextArea_'+id+'" class="form-control" readonly>'+status+'</textarea>'+
+			'</td>'+
+		'</tr>');
+	var textArea=document.getElementById('myTextArea_'+id);
+	textArea.style.height = "1px";
+	textArea.style.height = (25+textArea.scrollHeight)+"px";
+} 
+</script>

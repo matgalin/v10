@@ -1,0 +1,12 @@
+- name: copy main kea config to dhcp server
+  copy:
+    src: "{{script_dir}}/tests/{{test}}/kea/ctrl_{{test}}.conf"
+    dest: "{{dhcp_dir}}/{{test}}/ctrl_{{test}}.conf"
+    force: yes
+    mode: 0770
+- name: copy ipv4 kea config to dhcp server
+  copy:
+    src: "{{script_dir}}/tests/{{test}}/kea/v4_{{test}}.conf"
+    dest: "{{dhcp_dir}}/{{test}}/v4_{{test}}.conf"
+    force: yes
+    mode: 0770   

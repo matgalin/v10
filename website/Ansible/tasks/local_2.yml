@@ -1,0 +1,17 @@
+- name: create main Kea file
+  template:
+   src: kea_template_main.j2
+   dest: "{{script_dir}}/tests/{{test}}/kea/ctrl_{{test}}.conf"
+   
+- name: create ipv4 config file
+  template:
+   src: kea_template.j2
+   dest: "{{script_dir}}/tests/{{test}}/kea/v4_{{test}}.conf"
+   
+- name: set files format
+  shell: "dos2unix -o {{script_dir}}/tests/{{test}}/kea/ctrl_{{test}}.conf"
+  
+- name: set files privilages
+  shell: "chmod -R 777 {{script_dir}}/tests/{{test}}/binaries/"
+- name: set files privilages
+  shell: "chmod -R 777 {{script_dir}}/tests/{{test}}/kea/"

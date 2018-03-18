@@ -1,0 +1,14 @@
+- name: Prepare remote host files; copying tftp files
+  hosts: server
+  become: True
+  tasks:
+  - include_tasks: tasks/tftp_1.yml
+  vars:
+    tftp_dir: "{{tftp}}"
+    test: "{{test}}"
+    dhcp_dir: "{{dhcp}}"
+    script_dir: "{{playbook_dir}}"
+#- import_playbook: start2.yml    
+  vars_files:
+  - tests/{{test}}/CMmain.yml
+    

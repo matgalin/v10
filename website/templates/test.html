@@ -1,0 +1,25 @@
+{% include 'base_start.html' %}
+      <!-- Breadcrumbs-->
+
+	<p id='test'> Hello </p>
+ 
+{% include 'base_end.html' %}     
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.6/socket.io.js"></script>
+<script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            namespace = '/{{rand}}'; // change to an empty string to use the global namespace
+            // the socket.io documentation recommends sending an explicit package upon connection
+            // this is specially important when using the global namespace
+            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+            
+            socket.on('connect', function(msg) {
+                socket.emit('my event', {data: 'I\'m connected!'});
+            });
+            
+            socket.on('message', function(msg){
+                console.log(msg.time)
+                $('#test').html('<p>' + msg.time + '</p>');             
+            });
+          
+        });
+    </script>

@@ -1,0 +1,300 @@
+{% include 'base_start.html' %}
+      <!-- Breadcrumbs-->
+<ol class="breadcrumb">
+	<h3><i class="fa fa-fw fa-clipboard"></i>Provisioning Settings: {{ PROV_configuration[0].configuration }}</h3>
+	<ul class="navbar-nav ml-auto">
+		<a href="#/" class="btn btn-dark" onClick="save()">
+			<i class="fa fa-fw fa-save"></i>SAVE
+		</a>
+	</ul>
+</ol>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="data" class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th style="width:20%"><input id="mainIds" type="text" name="mainIds" class="form-control" readonly="readonly" hidden>Name:</th>
+						<th style="width:65%">Description</th>
+						<th style="width:15%">IP Version</th>
+					</tr>
+				</thead>
+				<tbody id="data_table"></tbody>
+			</table>
+		</div>
+		<div class="table-responsive">
+			<table id="data" class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th style="width:20%">Default CM configuration:</th>
+						<th style="width:20%">TFTP directory</th>
+						<th style="width:20%">DHCP directory</th>
+						<th style="width:20%">DHCP interface</th>
+						<th style="width:20%">DHCP ip</th>
+					</tr>
+				</thead>
+				<tbody id="data_table2"></tbody>
+			</table>
+		</div>
+		<div class="table-responsive">
+			<table id="data" class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th style="width:10%"></th>
+						<th id="th4">IPv4</th>
+						<th id="th6">IPv6</th>
+					</tr>
+				</thead>
+				<tbody id="ip_table">
+				<tr>
+					<td><b>routers</b></td>
+					<td><input id="routers4" type="text" name="routers" value="{{ PROV_ipv4[0].routers }}" class="form-control"></td>
+					<td><input id="routers6" type="text" name="routers6" value="{{ PROV_ipv6[0].routers }}" class="form-control"></td>
+				</tr>
+				<tr>
+					<td><b>time</b></td>
+					<td><input id="time4" type="text" name="time" value="{{ PROV_ipv4[0].time }}" class="form-control"></td>
+					<td><input id="time6" type="text" name="time6" value="{{ PROV_ipv6[0].time }}" class="form-control"></td>
+				</tr>
+				<tr>
+					<td><b>tftp</b></td>
+					<td><input id="tftp4" type="text" name="tftp" value="{{ PROV_ipv4[0].tftp }}" class="form-control"></td>
+					<td><input id="tftp6" type="text" name="tftp6" value="{{ PROV_ipv6[0].tftp }}" class="form-control"></td>
+				</tr>
+				<tr>
+					<td><b>pool range</b></td>
+					<td><input id="pool4" type="text" name="pool_range" value="{{ PROV_ipv4[0].pool_range }}" class="form-control"></td>
+					<td><input id="pool6" type="text" name="pool_range6" value="{{ PROV_ipv6[0].pool_range }}" class="form-control"></td>
+				</tr>
+				<tr>
+					<td><b>subnet ip/mask</b></td>
+					<td><input id="subnet4" type="text" name="subnet" value="{{ PROV_ipv4[0].subnet }}" class="form-control"></td>
+					<td><input id="subnet6" type="text" name="subnet6" value="{{ PROV_ipv6[0].subnet }}" class="form-control"></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="table-responsive">
+			<table id="data" class="table table-hover borderless">
+				<thead>
+					<tr>
+						<th style="width:10%">Modem range</th>
+						<th style="width:20%">IPv4 Range</th>
+						<th style="width:20%">IPv6 Range</th>
+						<th style="width:15%">routersv4</th>
+						<th style="width:15%">routersv6</th>
+						<th style="width:18%">file</th>
+						<th style="width:2%"><a id="new_button_less" href="#/" class="btn btn-dark" onClick="less_new()"><i class="fa fa-fw fa-plus"></i></a></th>
+					</tr>
+				</thead>
+				<tbody id="configs_table"></tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+//Get Data from database
+document.getElementById("link_prov").classList.add("active");
+var PROV_configuration = JSON.parse('{{ PROV_configuration | tojson }}');
+var PROV_ipv4 = JSON.parse('{{ PROV_ipv4 | tojson }}');
+var PROV_ipv6 = JSON.parse('{{ PROV_ipv6 | tojson }}');
+var PROV_cm = JSON.parse('{{ PROV_cm | tojson }}');
+var CM_configuration = JSON.parse('{{ CM_configuration | tojson }}');
+//Add Data to Page
+$(document).ready(function(){
+	$('#data_table2').append(''+
+		'<tr id="main_conf2">'+
+			'<td><select id="configuration_default_cm_configuration_id_main" name="configuration_default_cm_configuration_id_main" class="form-control" onchange="changeOptions2()">'+
+			'<option value="0">None</option></select></td>'+
+			'<td><input type="text" name="configuration_tftp_directory_main" value="'+PROV_configuration[0].tftp_directory+'" class="form-control"></td>'+
+			'<td><input type="text" name="configuration_dhcp_directory_main" value="'+PROV_configuration[0].dhcp_directory+'" class="form-control"></td>'+
+			'<td><input type="text" name="configuration_dhcp_interface_main" value="'+PROV_configuration[0].dhcp_interface+'" class="form-control"></td>'+
+			'<td><input type="text" name="configuration_dhcp_ip_main" value="'+PROV_configuration[0].dhcp_ip+'" class="form-control"></td>'+
+		'</tr>');
+	for (var j = 0; j < CM_configuration.length; j++) {	
+		if (CM_configuration[j].id==PROV_configuration[0].default_cm_configuration_id) {
+			$('#configuration_default_cm_configuration_id_main').append('<option value="'+CM_configuration[j].id+'" selected>'+CM_configuration[j].name+'</option>');
+		}
+		else {
+			$('#configuration_default_cm_configuration_id_main').append('<option value="'+CM_configuration[j].id+'">'+CM_configuration[j].name+'</option>');
+		}
+	}
+	$('#data_table').append(''+
+	'<tr id="main_conf">'+
+		'<td><input type="text" name="configuration_name_main" value="'+PROV_configuration[0].name+'" class="form-control"></td>'+
+		'<td><input type="text" name="configuration_description_main" value="'+PROV_configuration[0].description+'" class="form-control"></td>'+
+		'<td><select id="configuration_ip_main" name="configuration_ip_main" class="form-control" onchange="changeOptions()"></select></td>'+
+	'</tr>');
+	if (PROV_configuration[0].ip_version=='IPv4') {
+		$('#configuration_ip_main').append('<option value="IPv4" selected>IPv4</option>');
+	}
+	else {
+		$('#configuration_ip_main').append('<option value="IPv4">IPv4</option>'); 
+	}
+	if (PROV_configuration[0].ip_version=='IPv6') {
+		$('#configuration_ip_main').append('<option value="IPv6" selected>IPv6</option>');
+	}
+	else {
+		$('#configuration_ip_main').append('<option value="IPv6">IPv6</option>'); 
+	}
+	if (PROV_configuration[0].ip_version=='IPv4 and IPv6') {
+		$('#configuration_ip_main').append('<option value="IPv4 and IPv6" selected>IPv4 and IPv6</option>');
+	}
+	else {
+		$('#configuration_ip_main').append('<option value="IPv4 and IPv6">IPv4 and IPv6</option>'); 
+	}
+			
+	for (var i = 0; i < PROV_cm.length; i++) {
+		$('#configs_table').append(''+
+			'<tr class="table-dark" id="less_'+i+'">'+
+				'<td><input type="text" name="cable_modems_'+i+'" value="'+PROV_cm[i].cable_modem+'" class="form-control"></td>'+
+				'<td><input type="text" id="ipv4" name="ip4_'+i+'" value="'+PROV_cm[i].ipv4+'" class="form-control"></td>'+
+				'<td><input type="text" name="ip6_'+i+'" value="'+PROV_cm[i].ipv6+'" class="form-control"></td>'+
+				'<td><input type="text" id="ipv4" name="routers4_'+i+'" value="'+PROV_cm[i].routersv4+'" class="form-control"></td>'+
+				'<td><input type="text" name="routers6_'+i+'" value="'+PROV_cm[i].routersv6+'" class="form-control"></td>'+
+				'<td><select id="configuration_file_'+i+'" name="configuration_file_'+i+'" class="form-control">'+
+			'</tr>');
+		for (var j = 0; j < CM_configuration.length; j++) {	
+			if (CM_configuration[j].id==PROV_cm[i].cm_configuration_id) {
+				$('#configuration_file_'+i).append('<option value="'+CM_configuration[j].id+'" selected>'+CM_configuration[j].name+'</option>');
+			}
+			else {
+				$('#configuration_file_'+i).append('<option value="'+CM_configuration[j].id+'">'+CM_configuration[j].name+'</option>');
+			}
+		}
+		$('#less_'+i).append('<td><a href="#/" class="btn btn-dark" onclick="remove_less(\''+PROV_cm[i].id+'\', \''+PROV_cm[i].cable_modem+'\')"><i class="fa fa-fw fa-minus"></i></a></td>'); 
+	}
+	changeOptions();
+		
+})
+
+
+//Reacting on changing options
+function changeOptions() {
+	var x = document.getElementById("configuration_ip_main").selectedIndex;
+	var select_id = document.getElementById("configuration_ip_main").getElementsByTagName("option")[x].value;
+	if (select_id=='IPv4') {
+		document.getElementById("tftp4").readOnly = false;
+		document.getElementById("time4").readOnly = false;
+		document.getElementById("pool4").readOnly = false;
+		document.getElementById("subnet4").readOnly = false;
+		document.getElementById("routers4").readOnly = false;
+
+		
+		document.getElementById("tftp6").readOnly = true;
+		document.getElementById("time6").readOnly = true;
+		document.getElementById("pool6").readOnly = true;
+		document.getElementById("subnet6").readOnly = true;
+		document.getElementById("routers6").readOnly = true;
+	}
+	if (select_id=='IPv6') {
+	document.getElementById("tftp4").readOnly = true;
+	document.getElementById("time4").readOnly = true;
+	document.getElementById("pool4").readOnly = true;
+	document.getElementById("subnet4").readOnly = true;
+	document.getElementById("routers4").readOnly = true;
+
+	
+	
+	document.getElementById("tftp6").readOnly = false;
+	document.getElementById("time6").readOnly = false;
+	document.getElementById("pool6").readOnly = false;
+	document.getElementById("subnet6").readOnly = false;
+	document.getElementById("routers6").readOnly = false;
+	}
+	if (select_id=='IPv4 and IPv6') {
+	document.getElementById("tftp4").readOnly = false;
+	document.getElementById("time4").readOnly = false;
+	document.getElementById("pool4").readOnly = false;
+	document.getElementById("subnet4").readOnly = false;
+	document.getElementById("routers4").readOnly = false;
+
+	
+	document.getElementById("tftp6").readOnly = false;
+	document.getElementById("time6").readOnly = false;
+	document.getElementById("pool6").readOnly = false;
+	document.getElementById("subnet6").readOnly = false;
+	document.getElementById("routers6").readOnly = false;
+	}
+	changeOptions2();		
+}
+	
+	
+function changeOptions2() {
+	var x = document.getElementById("configuration_default_cm_configuration_id_main").selectedIndex;
+	var select_id = document.getElementById("configuration_default_cm_configuration_id_main").getElementsByTagName("option")[x].value;
+	var x2 = document.getElementById("configuration_ip_main").selectedIndex;
+	var select_id2 = document.getElementById("configuration_ip_main").getElementsByTagName("option")[x2].value;
+	if (select_id==0) {
+		document.getElementById("routers4").readOnly = true;
+		document.getElementById("routers6").readOnly = true;
+		document.getElementById("pool4").readOnly = true;
+		document.getElementById("pool6").readOnly = true;
+		}
+	else {
+		if (select_id2=='IPv4') {	
+			document.getElementById("routers4").readOnly = false;
+			document.getElementById("routers6").readOnly = true;
+			document.getElementById("pool4").readOnly = false;
+			document.getElementById("pool6").readOnly = true;
+		}
+		else if (select_id2=='IPv6') {
+			document.getElementById("routers4").readOnly = true;
+			document.getElementById("routers6").readOnly = false;
+			document.getElementById("pool4").readOnly = true;
+			document.getElementById("pool6").readOnly = false;
+		}
+		else if (select_id2=='IPv4 and IPv6') {
+			document.getElementById("routers4").readOnly = false;
+			document.getElementById("routers6").readOnly = false;
+			document.getElementById("pool4").readOnly = false;
+			document.getElementById("pool6").readOnly = false;
+		}
+	}
+}
+
+//Adding new provisioning configurations
+function less_new() {
+	$('#configs_table').prepend(''+
+		'<tr id="less_new" class="table-info">'+
+			'<td><input type="text" name="cable_modems_new" class="form-control"></td>'+
+			'<td><input type="text" name="ip4_new" class="form-control"></td>'+
+			'<td><input type="text" name="ip6_new" class="form-control"></td>'+
+			'<td><input type="text" name="routers4_new" class="form-control"></td>'+
+			'<td><input type="text" name="routers6_new" class="form-control"></td>'+
+			'<td><select id="configuration_file_new" name="configuration_file_new" class="form-control"></select></td>'+
+			'<td><a id="new_button_less" href="#/" class="btn btn-dark" onClick="less_delete()"><i class="fa fa-fw fa-minus"></i></a></td>'+
+		'</tr>');
+	for (var j = 0; j < CM_configuration.length; j++) {
+		$('#configuration_file_new').append('<option value="'+CM_configuration[j].id+'">'+CM_configuration[j].name+'</option>');
+	}
+}
+//Getting IDS of added objects
+function tester() {
+	var listOfObjects = [];
+	var dates = document.querySelectorAll('*[id^="less_"]');
+	for (var i = 0; i < dates.length; i++){
+		var singleObj = {}
+		singleObj['name']=dates[i].id
+		listOfObjects.push(singleObj);
+	}
+	let names = listOfObjects.map(item => item.name)
+	document.getElementById("mainIds").value=names.join();
+}
+function remove_less(id, name) {
+	if (window.confirm("Are you sure you want to remove Cable Modem Settings for CMs: \""+name+"\"'?")) {
+		document.getElementById("post").action="/delete/PROVconf/"+id;
+		document.getElementById("post").submit();
+	}
+}
+//remove created settings
+function less_delete() {
+	document.getElementById("less_new").remove();
+}
+function save() {
+tester();
+	document.getElementById("post").action="/update/PROVconf";
+	document.getElementById("post").submit();
+}
+
+</script>       
+ {% include 'base_end.html' %}     

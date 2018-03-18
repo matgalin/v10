@@ -1,0 +1,11 @@
+- name: Enabling DHCP server
+  hosts: server
+  become: True
+  tasks:
+  - include_tasks: tasks/dhcp_enable_0.yml
+  vars:
+    test: "{{test}}"
+    dhcp_dir: "{{dhcp}}"
+    script_dir: "{{playbook_dir}}" 
+  vars_files:
+  - tests/{{test}}/CMmain.yml   

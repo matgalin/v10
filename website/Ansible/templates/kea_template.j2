@@ -1,0 +1,60 @@
+
+{
+# DHCPv4 specific configuration starts here.
+"Dhcp4": {
+	"interfaces-config": {
+		"interfaces": [ "{{interface}}/{{ip}}" ],
+		"dhcp-socket-type": "udp"
+						},
+	"valid-lifetime": 400000,
+	"renew-timer": 100000,
+	"rebind-timer": 200000,
+	"client-classes": [
+		{
+		###klasa dla CM
+		"name": "CM",
+		"test": "substring(option[60].hex,0,6) == 'docsis'",
+		"next-server": "{{tftp_server}}",
+		{% if default_config_file is defined %}
+		"boot-file-name": "{{test}}/binaries/{{default_config_file}}.bin",
+		{% endif %}
+		"option-data": [
+			{ "name": "tftp-server-name", "data": "{{tftp_server}}" },
+			{ "name": "time-servers", "data": "{{time_server}}"},
+			{% if default_config_file is defined %}
+			{ "name": "routers", "data": "{{routers}}"},
+			{% endif %}
+			{ "name": "time-offset", "data": "-3600" }
+					]
+		}],
+#----------------------------------------------------------------------- Siec pod CM
+	"subnet4":
+	[{
+		{% if default_config_file is defined %}"pools": [ { "pool": "{{pool}}" }],{% endif %}
+		"subnet": "{{subnet}}",
+		"client-class": "CM",
+		"reservations": [
+{% for item in config_files %}
+			{ #MAC:{{item.mac}}
+			"hw-address":"{{item.mac}}",
+			"ip-address":"{{item.ip}}",
+			"option-data": [
+				{ "name": "routers", "data": "{{item.routers}}" }	],
+			"boot-file-name": "{{test}}/binaries/{{item.config_file}}.bin" } {% if not loop.last %}, {% endif %}
+{% endfor %}
+		
+		
+		
+		]
+	}
+	
+]},
+# DHCPv4 specific configuration ends here. Logger parameters (that could be shared among several components) start here. This section is used by both the DHCPv4 and DHCPv6 servers.
+"Logging": {
+   "loggers": [{
+        "name": "*",
+        "severity": "DEBUG"
+    }]
+}
+# Logger parameters end here. The whole configuration structure ends here.
+}

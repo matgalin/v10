@@ -1,0 +1,12 @@
+- name: compile config files on localhost server
+  shell: "docsis -e {{script_dir}}/tests/{{test}}/configs/{{item.config_file}}.conf {{script_dir}}/tests/{{test}}/configs/key {{script_dir}}/tests/{{test}}/binaries/{{item.config_file}}.bin"
+  with_items: "{{config_files}}"
+  
+- name: compile default config files on localhost server
+  shell: "docsis -e {{script_dir}}/tests/{{test}}/configs/{{default_config_file}}.conf {{script_dir}}/tests/{{test}}/configs/key {{script_dir}}/tests/{{test}}/binaries/{{default_config_file}}.bin"
+  when: default_config_file is defined  
+- name: create main Kea file
+  template:
+   src: kea_template_main.j2
+   dest: "{{script_dir}}/tests/{{test}}/kea/ctrl_{{test}}.conf"
+   

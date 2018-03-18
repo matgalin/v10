@@ -1,0 +1,2 @@
+- name: disable kea
+  command: pkill -f '{{dhcp_dir}}/{{test}}/v4_{{test}}.conf'

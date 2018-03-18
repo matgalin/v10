@@ -1,0 +1,93 @@
+{% include 'base_start.html' %}
+      <!-- Breadcrumbs-->
+<ol class="breadcrumb">
+	<h3><i class="fa fa-fw fa-columns"></i>Data Downloader</h3>
+</ol>
+	
+<div class="row">
+	<div class="col-xl-3 col-sm-6 mb-3">
+		<div id="logs_is_running1" class="card text-white bg-dark o-hidden" style="width: 300px;">
+			<div class="card-body">
+				<div class="card-body-icon">
+					<i class="fa fa-fw fa-dashboard"></i>
+				</div>
+				<h4 class="card-title">Data Downloader</h4>
+			</div>
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item text-white bg-dark">
+					<select class="form-control" size="1" id="options_templates" onchange="changeOptionsTemplates()">
+					</select>
+				</li>
+				<li class="list-group-item text-white bg-dark">
+					<select class="form-control" size="1" id="options_hosts" onchange="changeOptionsHosts()">
+					</select>
+				</li>
+				<li class="list-group-item text-white bg-dark">
+					<select class="form-control" size="1" id="options_items">
+					</select>
+				</li>
+						<div class="text-center"><a href="#/" class="btn btn-dark" onClick="save_logs()">
+				<i class="fa fa-fw fa-save"></i>Download</a></div></li>
+			</ul>
+		</div>
+	</div>
+</div>
+		
+
+
+		
+<script>
+var run=0;
+document.getElementById("link_tools_downloader").classList.add("active");
+document.getElementById("collapsedTOOLS").classList.remove("collapsed");
+document.getElementById("collapseTools").classList.add("show");
+//Get Data from database
+var zabbix = JSON.parse('{{ downloader_data | tojson }}');
+
+
+//alert(zabbix[0].hosts.length);
+
+
+	for (var i = 0; i < zabbix.length; i++) {
+	if (zabbix[i].hosts.length != 0) {
+		$('#options_templates').append('<option value="'+zabbix[i].id+'">'+zabbix[i].name+'</option>');
+	}
+	}
+	changeOptionsTemplates()
+	
+
+
+
+
+function changeOptionsTemplates() {
+	var x = document.getElementById("options_templates").selectedIndex;
+	var select_id = document.getElementById("options_templates").getElementsByTagName("option")[x].value;
+	$('#options_hosts').html('');
+	$('#options_items').html('');
+		for (var i = 0; i < zabbix[x].hosts.length; i++) {
+		$('#options_hosts').append('<option value="'+zabbix[x].hosts[i].id+'">'+zabbix[x].hosts[i].name+'</option>');
+		}
+	changeOptionsHosts()
+		
+}
+function changeOptionsHosts() {
+	var x = document.getElementById("options_templates").selectedIndex;
+	var select_id = document.getElementById("options_templates").getElementsByTagName("option")[x].value;
+	var y = document.getElementById("options_hosts").selectedIndex;
+	var select_id2 = document.getElementById("options_hosts").getElementsByTagName("option")[y].value;
+	$('#options_items').html('');
+		for (var i = 0; i < zabbix[x].hosts[y].items.length; i++) {
+		$('#options_items').append('<option value="'+zabbix[x].hosts[y].items[i].id+'">'+zabbix[x].hosts[y].items[i].name+'</option>');
+		}
+		
+}
+function save_logs() {
+var x = document.getElementById("options_items").selectedIndex;
+var y = document.getElementById("options_hosts").selectedIndex;
+var item_id = document.getElementById("options_items").getElementsByTagName("option")[x].value;
+var item_name = document.getElementById("options_items").getElementsByTagName("option")[x].innerHTML;
+var host_name = document.getElementById("options_hosts").getElementsByTagName("option")[x].innerHTML;
+window.location.href = "/download/data_downloader/"+host_name+"/"+item_name+"/"+item_id;
+}
+</script>       
+ {% include 'base_end.html' %}     

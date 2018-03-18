@@ -1,0 +1,78 @@
+{% include 'base_start.html' %}
+      <!-- Breadcrumbs-->
+<ol class="breadcrumb">
+	<h3><i class="fa fa-fw fa-list-ul"></i>Cable Modem List</h3>
+</ol>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="data" class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th style="width:10%">Nr:</th>
+						<th style="width:20%">Vendor</th>
+						<th style="width:20%">MAC</th>
+						<th style="width:20%">SN</th>
+						<th style="width:30%">Linked to</th>
+					</tr>
+				</thead>
+				<tbody id="cable_modem_table"></tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+document.getElementById("link_tools_cm").classList.add("active");
+document.getElementById("collapsedTOOLS").classList.remove("collapsed");
+document.getElementById("collapseTools").classList.add("show");
+var CM_List = JSON.parse('{{ CM_List | tojson }}');
+var PROV_cm = JSON.parse('{{ PROV_cm | tojson }}');
+var PROV_configuration = JSON.parse('{{ PROV_configuration | tojson }}');
+$(document).ready(function(){
+for (var i = 0; i < CM_List.length; i++) {
+		$('#cable_modem_table').append(''+
+		'<tr>'+
+		'<td>'+CM_List[i].nr+'</td>'+
+		'<td>'+CM_List[i].vendor+'</td>'+
+		'<td>'+CM_List[i].mac+'</td>'+
+		'<td>'+CM_List[i].sn+'</td>'+
+		'<td id="cm_'+CM_List[i].nr+'"></td>'+
+		'</tr>');
+		var linked_list=[];
+		for (var j = 0; j < PROV_cm.length; j++) {
+			var split_list=[];
+			split_list = PROV_cm[j].cable_modem.split("-");
+			if (split_list.length==1) {
+				split_list.push(split_list[0]);
+			}
+			for (var k = split_list[0]; k <= split_list[1]; k++) {
+				if (CM_List[i].nr==k){
+					linked_list.push(PROV_cm[j].configuration_id);
+				}
+			}
+		}
+		linked_list.sort();
+				//alert(linked_list);
+		name_list=[]
+		for (var j = 0; j < linked_list.length; j++) {		
+			for (var k = 0; k < PROV_configuration.length; k++) {	
+				if (linked_list[j]==PROV_configuration[k].id) {
+					name_list.push(PROV_configuration[k].name);
+					if (j>0) {
+						$('#cm_'+CM_List[i].nr+'').append(', <a href="/PROV/conf/'+linked_list[j]+'">'+name_list[j]+'</a>');
+						}
+					else {
+					$('#cm_'+CM_List[i].nr+'').append('<a href="/PROV/conf/'+linked_list[j]+'">'+name_list[j]+'</a>');
+					}
+					
+					
+					}
+				}
+			}
+		
+		
+		
+		
+		}
+})
+</script>       
+ {% include 'base_end.html' %}     

@@ -1,0 +1,412 @@
+{% include 'base_start.html' %}
+	<ol class="breadcrumb">
+	<h3><i class="fa fa-fw fa-columns"></i>Test Control: {{ TEST_configuration[0].name }}/{{ TEST_history[0].name }}</h3>
+	</ol>
+	<!-- <div class="loading" id="loading" style="display:none;"></div> -->
+	<div class="row">
+		<div class="col-xl-4 col-sm-6 mb-1">
+			<div class="card text-white bg-dark o-hidden">
+				<div class="card-body">
+					<div class="card-body-icon">
+						<i class="fa fa-fw fa-wrench"></i>
+					</div>
+					<h4 class="card-title">Control Panel</h4>
+				</div>
+				<ul class="list-group list-group-flush">
+					{% if TEST_history[0].description != '' %}
+						<li class="list-group-item text-white bg-dark ">{{ TEST_history[0].description }}</li>
+					{% endif %}
+					<li class="list-group-item text-white bg-dark"><div class="pull-left"><h6>Status:</h6></div><div class="pull-right" id="status"></div></li>
+					<li class="list-group-item text-white bg-dark"><div class="pull-left"><h6>Control:</h6></div><div class="pull-right" id="control"></div></li>
+					{% if TEST_history[0].data_start != '' %}
+						<li class="list-group-item text-white bg-dark"><div class="pull-left"><h6>Test started:</h6></div><div class="pull-right">{{ TEST_history[0].data_start }}</div></li>
+					{% endif %}
+					{% if TEST_history[0].data_planned_end != '' %}
+						<li class="list-group-item text-white bg-dark"><div class="pull-left"><h6>Test planned end:</h6></div><div class="pull-right">{{ TEST_history[0].data_planned_end }}</div></li>
+					{% endif %}
+					{% if TEST_history[0].data_end != '' %}
+						<li class="list-group-item text-white bg-dark"><div class="pull-left"><h6>Test ended:</h6></div><div class="pull-right">{{ TEST_history[0].data_end }}</div></li>
+					{% endif %}	
+					{% if TEST_history[0].is_running == 2 %}
+						<li class="list-group-item text-white bg-dark"><div class="pull-left"><h6>Test interval:</h6></div><div class="pull-right">{{ TEST_history[0].interval }}</div></li>
+					{% endif %}
+					{% if TEST_history[0].is_running == 0 or TEST_history[0].is_running == 4 %}
+						<li class="list-group-item text-white bg-dark"><div class="pull-left"><h6>Test interval:</h6></div><div class="pull-right"><input type="text" id="interval" name="interval" class="form-control"></div></li>
+					{% endif %}
+				</ul>
+				{% if TEST_history[0].data_start != '' %}
+					<div class="card-footer text-white clearfix small z-1">
+						<div class="pull-left">
+							<a onClick="GRAFANA()" class="btn btn-dark">Grafana <i class="fa fa-angle-right"></i></a>
+							<a onClick="ZABBIX()" class="btn btn-dark" target="_blank" href="http://{{ TEST_configuration[0].logs_ip }}/zabbix/overview.php?groupid={{ TEST_history[0].zabbix_group_id }}&type=1&view_style=1">Zabbix <i class="fa fa-angle-right"></i></a>
+						</div>
+						{% if TEST_history[0].is_running == 2 %}
+							<div class="pull-right">
+								<a class="btn btn-dark" href="/report/{{ TEST_configuration[0].id }}">Report <i class="fa fa-angle-right"></i></a>
+							</div>
+						{% endif %}
+						
+					</div>
+				{% endif %}
+			</div>
+		</div>
+		<!-- <div class="col-xl-4 col-sm-4 mb-1" id="info_tab"> -->
+			<!-- <div class="card text-white bg-dark o-hidden"> -->
+				<!-- <div class="card-body"> -->
+					<!-- <div class="card-body-icon"> -->
+						<!-- <i class="fa fa-fw fa-dashboard"></i> -->
+					<!-- </div> -->
+					<!-- <h4 class="card-title">Info Panel</h4> -->
+				<!-- </div> -->
+				<!-- <ul class="list-group list-group-flush"> -->
+					<!-- {% if TEST_configuration[0].description != '' %} -->
+						<!-- <li class="list-group-item text-white bg-dark ">{{ TEST_configuration[0].description }}</li> -->
+					<!-- {% endif %} -->
+					<!-- {% if TEST_history[0].data_start != '' %} -->
+						<!-- <li class="list-group-item text-white bg-dark"><div class="pull-left"><h6>Test started:</h6></div><div class="pull-right">{{ TEST_history[0].data_start }}</div></li> -->
+					<!-- {% endif %} -->
+					<!-- {% if TEST_history[0].data_end != '' %} -->
+						<!-- <li class="list-group-item text-white bg-dark"><div class="pull-left"><h6>Test ended:</h6></div><div class="pull-right">{{ TEST_history[0].data_end }}</div></li> -->
+						<!-- <li class="list-group-item text-white bg-dark"><div class="pull-left"><h6>Test interval:</h6></div><div class="pull-right">{{ TEST_history[0].interval }}</div></li> -->
+					<!-- {% endif %} -->
+				<!-- </ul> -->
+				<!-- {% if TEST_history[0].data_start != '' %} -->
+					<!-- <div class="card-footer text-white clearfix small z-1"> -->
+						<!-- <a class="btn btn-dark" target="_blank" href="http://{{ TEST_configuration[0].logs_ip }}/grafana/d/{{ TEST_history[0].grafana_dashboard_uid }}/{{ TEST_configuration[0].name }}?from=now-30m&to=now&orgId=1&refresh=10s">Grafana <i class="fa fa-angle-right"></i></a> -->
+						<!-- <a class="btn btn-dark" target="_blank" href="http://{{ TEST_configuration[0].logs_ip }}/zabbix/overview.php?groupid={{ TEST_history[0].zabbix_group_id }}&type=1&view_style=1">Zabbix <i class="fa fa-angle-right"></i></a> -->
+					<!-- </div> -->
+				<!-- {% endif %} -->
+			<!-- </div> -->
+		<!-- </div> -->
+		{% if TEST_history[0].is_running == 1 or TEST_history[0].is_running == 2 %}
+			<div class="col-xl-4 col-sm-6 mb-1" id="data_tab">
+				<div class="card text-white bg-dark o-hidden">
+					<div class="card-body">
+						<div class="card-body-icon">
+							<i class="fa fa-fw fa-file"></i>
+						</div>
+						<h4 class="card-title">Data Panel</h4>
+					</div>
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item text-white bg-dark"><select class="form-control" size="1" id="options_hosts" onchange="changeOptions()"></select></li>
+						<li class="list-group-item text-white bg-dark"><select class="form-control" size="1" id="options_items"></select></li>
+						<div class="text-center">
+							<a href="#/" class="btn btn-dark" onClick="save_logs()"><i class="fa fa-fw fa-save"></i>Download</a>
+						</div>
+					</ul>
+				</div>
+			</div>
+		{% endif %}
+		{% if TEST_history[0].is_running == 4 %}
+			<div class="col-xl-8 col-sm-6 mb-1" id="error_tab">
+				<div class="card text-white bg-dark o-hidden">
+					<div class="card-body">
+						<div class="card-body-icon">
+							<i class="fa fa-fw fa-exclamation-triangle" style="color:red"></i>
+						</div>
+						<h4 class="card-title">Error Panel</h4>
+					</div>
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item text-white bg-dark"><div class="pull-left"><h6 id="error_name"></h6></div><div class="pull-right" id="error_date"></div></li>
+						<li class="list-group-item text-white bg-dark "><textarea id="error_content" class="form-control" readonly style="background-color:white;"></textarea></li>
+					</ul>
+				</div>
+			</div>
+		{% endif %}
+		<div id="status_tab" class="col-xl-8 col-sm-6 mb-1" style="display:none;">
+			<div class="card text-white bg-dark o-hidden">
+				<div class="card-body">
+					<div class="card-body-icon">
+						<i class="fa fa-fw fa-dashboard"></i>
+					</div>
+					<h4 class="card-title">Executing Status</h4>
+				</div>
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item text-white bg-dark "><textarea id="logs_content" class="form-control" readonly></textarea></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	
+
+
+		
+
+ {% include 'base_end.html' %}     
+<script>
+var run=0;
+var current_data;
+var start=0;
+var interval;
+document.getElementById("link_test").classList.add("active");
+//Get Data from database
+var content = JSON.parse('{{ TEST_configuration | tojson }}');
+var history = JSON.parse('{{ TEST_history | tojson }}');
+var logs = JSON.parse('{{ TEST_logs | tojson }}');
+if ( {{ TEST_history[0].is_running }}==1 || {{ TEST_history[0].is_running }}==2 ) {
+	var zabbix = JSON.parse('{{ zabbix_data | tojson }}');
+	if (zabbix.length!=0) {
+		for (var i = 0; i < zabbix[0].hosts.length; i++) {
+			$('#options_hosts').append('<option value="'+zabbix[0].hosts[i].id+'">'+zabbix[0].hosts[i].name.replace('_{{ TEST_configuration[0].name }}', '')+'</option>');
+		}
+		changeOptions()
+	}
+}
+if ( {{ TEST_history[0].is_running }}==4) {
+	var logs = JSON.parse('{{ TEST_logs | tojson }}');
+	if (logs.length!=0) {
+		$('#error_name').append(logs[0].name);
+		$('#error_date').append(logs[0].date);
+		$('#error_content').append(logs[0].content);
+		var error_content=document.getElementById('error_content');
+		error_content.style.height = "1px";
+		error_content.style.height = (25+error_content.scrollHeight)+"px";
+	}
+}
+	
+
+
+$(document).ready(function(){
+		if ({{ TEST_history[0].is_running }}==0) {
+			document.getElementById('status').innerHTML=''+
+				'<a href="#/" class="btn btn-danger">'+
+				'<i class="fa fa-fw fa-thumbs-down" style="color:white"></i>NOT RUNNING</a>';
+			document.getElementById('control').innerHTML=''+
+				'<a href="#/" class="btn btn-success" onClick="RUN()">'+
+				'<i class="fa fa-fw fa-play"></i>RUN</a>';
+			}
+		if ({{ TEST_history[0].is_running }}==1) {
+			document.getElementById('status').innerHTML=''+
+				'<a href="#/" class="btn btn-success">'+
+				'<i class="fa fa-fw fa-thumbs-up" style="color:white"></i>RUNNING</a>';
+			document.getElementById('control').innerHTML=''+
+				'<a href="#/" class="btn btn-warning" onClick="STOP()">'+
+				'<i class="fa fa-fw fa-pause"></i>STOP</a>';
+		}
+		if ({{ TEST_history[0].is_running }}==2) {
+			document.getElementById('status').innerHTML=''+
+				'<a href="#/" class="btn btn-warning">'+
+				'<i class="fa fa-fw fa-thumbs-up" style="color:white"></i>FINISHED</a>';
+			document.getElementById('control').innerHTML=''+
+				'<a href="#/" class="btn btn-warning" onClick="CLEAR()">'+
+				'<i class="fa fa-fw fa-step-forward"></i>CLEAR</a>';
+			}
+		if ({{ TEST_history[0].is_running }}==3) {
+			configuring();
+			setTimeout(function () {
+					interval=setInterval(refresh_function, 1000);
+					}, 200);
+			}
+		if ({{ TEST_history[0].is_running }}==4) {
+			document.getElementById('status').innerHTML=''+
+				'<a href="#/" class="btn btn-warning">'+
+				'<i class="fa fa-fw fa-exclamation" style="color:red"></i><b><font color="red">ERROR</font></b><i class="fa fa-fw fa-exclamation" style="color:red"></a>';
+			document.getElementById('control').innerHTML=''+
+				'<a href="#/" class="btn btn-success" onClick="RUN()">'+
+				'<i class="fa fa-fw fa-play"></i>RUN</a>';
+			}
+})
+
+function configuring() {
+	document.getElementById('status').innerHTML=''+
+		'<a href="#/" class="btn btn-warning">'+
+		'<i class="fa fa-fw fa-spinner fa-spin" style="color:red"></i><b><font color="red">CONFIGURING</font></b><i class="fa fa-fw fa-spinner fa-spin" style="color:red"></a>';
+	document.getElementById('control').innerHTML=''+
+		'<a href="#/" class="btn btn-warning">'+
+		'<i class="fa fa-fw fa-spinner fa-spin"></i></a>';
+	document.getElementById("status_tab").style.display = "block";
+	if (document.getElementById('data_tab') !=null) {
+		document.getElementById('data_tab').style.display = "none";
+	}
+	if (document.getElementById('error_tab') !=null) {
+		document.getElementById('error_tab').style.display = "none";
+	}
+}
+function changeOptions() {
+	var x = document.getElementById("options_hosts").selectedIndex;
+	var select_id = document.getElementById("options_hosts").getElementsByTagName("option")[x].value;
+	$('#options_items').html('');
+	if (select_id!='Choose one'){
+		for (var i = 0; i < zabbix[0].hosts[x].items.length; i++) {
+		$('#options_items').append('<option value="'+zabbix[0].hosts[x].items[i].id+'">'+zabbix[0].hosts[x].items[i].name+'</option>');
+		}
+		}
+}
+function save_logs() {
+var x = document.getElementById("options_items").selectedIndex;
+var y = document.getElementById("options_hosts").selectedIndex;
+var item_id = document.getElementById("options_items").getElementsByTagName("option")[x].value;
+var item_name = document.getElementById("options_items").getElementsByTagName("option")[x].innerHTML;
+var host_name = document.getElementById("options_hosts").getElementsByTagName("option")[x].innerHTML;
+window.location.href = "/download/test_status/"+host_name+"/"+item_name+"/"+item_id;
+}
+//function RUN() {
+//if (run==0)
+//{
+//document.getElementById("loading").style.display = "block";
+//run=1;
+//document.getElementById("post").action="/run/start/{{ TEST_configuration[0].id }}";
+//document.getElementById("post").submit();
+//}
+//}
+//function STOP() {
+//document.getElementById("post").action="/run/stop/{{ TEST_configuration[0].id }}";
+//document.getElementById("post").submit();
+//}
+
+function RUN() {
+interval = document.getElementById("interval")
+data=
+$.ajax({
+            url: '/run_test_scenario/start/{{ TEST_history[0].id }}/'+interval.value,
+			async: false,
+            data: '',
+            type: 'POST',
+            success: function(response) {
+				var response_content=JSON.parse(response);
+				if (response_content['status']==1) {
+					//configuring();
+					setTimeout(function () {
+						location.reload();
+					//interval=setInterval(refresh_function, 500);
+					}, 1000);
+					
+					}
+				else {
+					alert(response_content['msg'])
+					location.reload();
+				}
+            },
+            error: function(error) {
+                console.log(error);
+				location.reload();
+            }
+        });
+}
+function refresh_function() {
+
+$.ajax({
+            url: '/run_test_scenario/get/{{ TEST_history[0].id }}/null',
+			async: false,
+            data: '',
+            type: 'POST',
+            success: function(response) {
+				var full_content=JSON.parse(response);
+				if (full_content['status']==1) {
+					var finish=full_content.response.status;
+					if (start==0) {
+						if (full_content['status']==1) {
+							//var finish=data.response.status;
+							//var finish=JSON.parse(response.response.status);
+							//console.log(current_data.response);
+							if (start==0) {
+								current_data=full_content.response.content;
+								configuring();
+								for (var i = 0; i < current_data.length; i++) {
+									createNextStatus(current_data[i].id, current_data[i].name, current_data[i].status, current_data[i].flag);
+								}
+								start=1;
+							}
+							
+						}
+						else {
+							//alert(full_content['msg']);
+							location.reload();
+						}
+					}
+					
+					else if (start==1) {
+						var new_data=full_content.response.content;
+						var current_data_length=current_data.length;
+						var new_data_length=new_data.length;
+						if (current_data_length!=new_data_length) {
+						
+							for (var i = current_data_length; i < new_data_length; i++) {
+								createNextStatus(new_data[i].id, new_data[i].name, new_data[i].status, new_data[i].flag);
+							current_data=full_content.response.content;
+							}
+						window.scrollTo(0,document.body.scrollHeight);
+						}
+					}
+					if (finish==2 || finish==3) {
+						clearInterval(interval);
+						if (finish==2) {
+							setTimeout(function(){
+								location.reload();
+							}, 3000);
+						}
+						if (finish==3) {
+							setTimeout(function(){
+								location.reload();
+							}, 3000);	
+						}
+						
+					}
+				}
+				else {
+					//alert(full_content['msg'])
+					location.reload();
+				}
+            },
+            error: function(error) {
+                console.log(error);
+				location.reload();
+            }
+        });
+}
+function STOP() {
+data=
+$.ajax({
+            url: '/run_test_scenario/stop/{{ TEST_history[0].id }}/null',
+			async: false,
+            data: '',
+            type: 'POST',
+            success: function(response) {
+				var response_content=JSON.parse(response);
+				if (response_content['status']==1) {
+					location.reload();	
+				}
+				else {
+					alert(response_content['msg'])
+				}
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+}
+function CLEAR(){
+location.href = "/cleartest/{{ TEST_history[0].id }}";
+}
+function createNextStatus(id, name, status, flag) {
+	var color;
+	if (flag==1){
+		color='table-danger'
+	}
+	else if (flag==0){
+		color='table-success'
+	}
+	else if (flag==2){
+		color='table-dark'
+	}
+
+	$('#logs_content').append(''+
+			''+name+': '+status+'\n');
+		
+	var textArea=document.getElementById('logs_content');
+	textArea.style.height = "1px";
+	textArea.style.height = (25+textArea.scrollHeight)+"px";
+} 
+
+
+function GRAFANA() {
+	var start='{{ add_1 }}';
+	var stop='{{ add_2 }}';
+	if (stop=='None') {
+		stop='now';
+	}
+	url='http://{{ TEST_configuration[0].logs_ip }}/grafana/d/{{ TEST_history[0].grafana_dashboard_uid }}/{{ TEST_configuration[0].name }}?from='+start+'&to='+stop+'&orgId=1&refresh=10s';
+	window.open(url);
+}
+
+</script>       

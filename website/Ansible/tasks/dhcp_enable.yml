@@ -1,0 +1,2 @@
+- name: enable kea
+  command: keactrl start -c {{dhcp_dir}}/{{test}}/ctrl_{{test}}.conf

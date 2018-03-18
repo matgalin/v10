@@ -1,0 +1,13 @@
+- name: Prepare localhost files; creating Cable Modem files
+  hosts: localhost
+  connection: local
+  become: True
+  tasks:
+  - include_tasks: tasks/local_1.yml
+  vars:
+    test: "{{test}}"
+    script_dir: "{{playbook_dir}}"
+#- import_playbook: start2.yml    
+  vars_files:
+  - tests/{{test}}/CMmain.yml
+    

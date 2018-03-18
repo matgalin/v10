@@ -1,0 +1,17 @@
+
+[localhost]
+127.0.0.1
+[ccap]
+10.100.100.66
+[ccap:vars]
+ccap_user=geno
+ccap_pass=jSL
+ccap_enable=Dupa.8
+[server]
+10.100.100.19
+[server:vars]
+ansible_ssh_user=prov
+ansible_ssh_pass=prov
+ansible_sudo_pass=prov
+dhcp=/kea
+tftp=/tftp

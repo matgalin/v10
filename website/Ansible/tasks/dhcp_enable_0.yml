@@ -1,0 +1,5 @@
+- name: check if dhcp is online
+  shell: netstat -tulpn > check
+  
+- name: check if dhcp is online
+  shell: grep '{{ip}}:67' check

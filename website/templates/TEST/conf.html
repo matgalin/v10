@@ -1,0 +1,129 @@
+{% include 'base_start.html' %}
+      <!-- Breadcrumbs-->
+<ol class="breadcrumb">
+	<h3><i class="fa fa-fw fa-columns"></i>Test Management: {{ TEST_configuration[0].name }}</h3>
+	<ul class="navbar-nav ml-auto">
+		<a href="#/" class="btn btn-dark" onClick="save()">
+			<i class="fa fa-fw fa-save"></i>SAVE
+		</a>
+	</ul>
+</ol>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="data" class="table borderless">
+				<thead>
+					<tr>
+						<th style="width:20%">Name:</th>
+						<th style="width:80%">Description</th>
+					</tr>
+				</thead>
+			<tbody id="data1_table">
+				</tr>
+					<td><input type="text" name="configuration_name" value="{{ TEST_configuration[0].name }}" class="form-control"></td>
+					<td><input type="text" name="configuration_description" value="{{ TEST_configuration[0].description }}" class="form-control"></td>
+				</tr>
+			</tbody>
+		</table>
+		<table id="data" class="table borderless">
+				<thead>
+					<tr><th style="width:10%"></th>
+						<th style="width:30%">CCAP</th>
+						<th style="width:30%">Provisioning</th>
+						<th style="width:30%">Monitoring</th>
+					</tr>
+				</thead>
+			<tbody id="data2_table">
+				<tr>
+					<td><b>IP</b></td>
+					<td><input type="text" name="ccap_ip" value="{{ TEST_configuration[0].ccap_ip }}" class="form-control"></td>
+					<td><input type="text" name="prov_ip" value="{{ TEST_configuration[0].prov_ip }}" class="form-control"></td>
+					<td><input type="text" name="logs_ip" value="{{ TEST_configuration[0].logs_ip }}" class="form-control"></td>
+				</tr>
+				<tr>
+					<td><b>Login</b></td>
+					<td><input type="text" name="ccap_login" value="{{ TEST_configuration[0].ccap_login }}" class="form-control"></td>
+					<td><input type="text" name="prov_login" value="{{ TEST_configuration[0].prov_login }}" class="form-control"></td>
+					<td><input type="text" name="logs_login" value="{{ TEST_configuration[0].logs_login }}" class="form-control"></td>
+				</tr>
+				<tr>
+					<td><b>Password</b></td>
+					<td><input type="password" name="ccap_password" value="{{ TEST_configuration[0].ccap_password }}" class="form-control"></td>
+					<td><input type="password" name="prov_password" value="{{ TEST_configuration[0].prov_password }}" class="form-control"></td>
+					<td><input type="password" name="logs_password" value="{{ TEST_configuration[0].logs_password }}" class="form-control"></td>
+				</tr>
+				<tr>
+					<td><b>SU</b></td>
+					<td><input type="password" name="ccap_sudo" value="{{ TEST_configuration[0].ccap_sudo }}" class="form-control"></td>
+					<td><input type="password" name="prov_sudo" value="{{ TEST_configuration[0].prov_sudo }}" class="form-control"></td>
+					<td><input type="password" name="logs_sudo" value="{{ TEST_configuration[0].logs_sudo }}" class="form-control"></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><b>Config</b></td>
+					<td><select id="ccap_configuration_id" name="ccap_configuration_id" class="form-control"></td>
+					<td><select id="prov_configuration_id" name="prov_configuration_id" class="form-control"></td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+		
+	</div>
+
+<script>
+
+document.getElementById("link_test").classList.add("active");
+//Get Data from database
+var content = JSON.parse('{{ TEST_configuration | tojson }}');
+var PROVcontent = JSON.parse('{{ PROV_configuration | tojson }}');
+var CCAPcontent = JSON.parse('{{ CCAP_configuration | tojson }}');
+//update select list
+$(document).ready(function(){
+PROV_list();
+CCAP_list();
+})
+//get data to select list
+function PROV_list() {
+	var list = [];
+		for (var i = 0; i < PROVcontent.length; i++) {
+			var obj={};
+			obj['id']=PROVcontent[i].id;
+			obj['value']=PROVcontent[i].name;
+			list.push(obj);
+			
+		}
+		for (var i = 0; i < list.length; i++) {
+			
+			if (content[0].prov_configuration_id==list[i].id) {
+				$('#prov_configuration_id').append('<option value="'+list[i].id+'" selected>'+list[i].value+'</option>');
+				}
+			else {
+				$('#prov_configuration_id').append('<option value="'+list[i].id+'">'+list[i].value+'</option>'); }
+			}
+}
+function CCAP_list() {
+	var list = [];
+		for (var i = 0; i < CCAPcontent.length; i++) {
+			var obj={};
+			obj['id']=CCAPcontent[i].id;
+			obj['value']=CCAPcontent[i].name;
+			list.push(obj);
+			
+		}
+		for (var i = 0; i < list.length; i++) {
+			if (list[i].value.substr(0,7)!='example') {
+				if (content[0].ccap_configuration_id==list[i].id) {
+					$('#ccap_configuration_id').append('<option value="'+list[i].id+'" selected>'+list[i].value+'</option>');
+					}
+				else {
+					$('#ccap_configuration_id').append('<option value="'+list[i].id+'">'+list[i].value+'</option>'); }
+			}
+		}
+}	
+	
+function save() {
+document.getElementById("post").action="/update/TESTconf";
+document.getElementById("post").submit();
+}
+</script>       
+ {% include 'base_end.html' %}     

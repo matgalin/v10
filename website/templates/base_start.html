@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>System Laboratory Management</title>
+  <!-- Bootstrap core CSS-->
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+  <script src="{{ url_for('static',filename='js/website_data.js') }}"></script>
+  <link href="{{ url_for('static',filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link href="{{ url_for('static',filename='vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+  <!-- Custom styles for this template-->
+  <link href="{{ url_for('static',filename='css/sb-admin.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static',filename='css/loading.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static',filename='vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+
+  <!-- Navigation-->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <a class="navbar-brand" href="#/">System Laboratory Management</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav navbar-sidenav" id="Accordion">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard" id="link_main">
+          <a class="nav-link" href="/index">
+            <i class="fa fa-fw fa-dashboard"></i>
+            <span class="nav-link-text">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Cable Modem Files" id="link_cm">
+          <a class="nav-link" href="/CM/data">
+            <i class="fa fa-fw fa-file"></i>
+            <span class="nav-link-text">Cable Modem Files</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Provisioning Settings" id="link_prov">
+          <a class="nav-link" href="/PROV/data">
+            <i class="fa fa-fw fa-clipboard"></i>
+            <span class="nav-link-text">Provisioning Settings</span>
+          </a>
+        </li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Provisioning Settings" id="link_ccap_new">
+          <a class="nav-link" href="/CCAP_new/data">
+            <i class="fa fa-fw fa-clipboard"></i>
+            <span class="nav-link-text">CCAPnew</span>
+          </a>
+        </li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Test Management" id="link_test">
+          <a class="nav-link" href="/TEST/data">
+            <i class="fa fa-fw fa-columns"></i>
+            <span class="nav-link-text">Test Management</span>
+          </a>
+        </li>
+		 <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tools" id="link_tools">
+          <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" id="collapsedTOOLS" href="#collapseTools" data-parent="#Accordion">
+            <i class="fa fa-fw fa-wrench"></i>
+            <span class="nav-link-text">Tools</span>
+          </a>
+          <ul class="sidenav-second-level collapse" id="collapseTools">
+            <li id="link_tools_cm">
+              <a href="/TOOLS/CableModems">Cable Modem List</a>
+            </li>
+            <!-- <li id="link_tools_modulations"> -->
+              <!-- <a href="/TOOLS/Modulations">Modulation List</a> -->
+            <!-- </li> -->
+            <li id="link_tools_downloader">
+              <a href="/TOOLS/DataDownloader">Data Downloader</a>
+            </li>
+          </ul>
+        </li>
+		
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Links">
+          <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseLinks" data-parent="#Accordion">
+            <i class="fa fa-fw fa-link"></i>
+            <span class="nav-link-text">Links</span>
+          </a>
+          <ul class="sidenav-second-level collapse" id="collapseLinks">
+            <li>
+              <a href="#">XWiki</a>
+            </li>
+            <li>
+              <a href="#">Zabbix</a>
+            </li>
+            <li>
+              <a href="#">Grafana</a>
+            </li>
+            
+          </ul>
+        </li>
+        
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="content-wrapper">
+    <div class="container-fluid">
+     <form action="" id="post" method="post">
