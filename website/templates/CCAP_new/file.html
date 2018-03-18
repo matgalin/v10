@@ -46,63 +46,66 @@ for (var i = 0; i < ccap_list.length; i++) {
 }
 
 for (var i = 0; i < ccap_list.length; i++) {
-			$('#ccap-info').append(''+
-				'<div class="pull-left">'+
-					'<h5>'+ccap_list[i].name+'</h5>'+
-				'</div>'+
-				'<div class="pull-right">'+
-					'<a href="#/" class="btn btn-dark" onClick="addNew(\''+ccap_list[i].key+'\')"><i class="fa fa-fw fa-plus"></i></a>'+
-				'</div>'+
-				'<table class="table borderless">'+
-					'<thead>'+
-						'<tr>'+
-							'<th style="width:30%"></th>'+
-							'<th style="width:10%"></th>'+
-							'<th style="width:60%"></th>'+
-						'</tr>'+
-					'</thead>'+
-					'<tbody id="'+ccap_list[i].key+'">'+
-				'</table>'+
-				'<table class="table" id="'+ccap_list[i].key+'_select" style="display:none;">'+
-					'<tbody>'+
-						'<td style="width:20%">'+
-							'<select class="form-control" size="1" id="'+ccap_list[i].key+'_select_file" onchange="changeFile(\''+ccap_list[i].key+'\')">'+
-								'<option value="Choose one" selected>Choose one</option>'+
-							'</select>'+
-						'</td>'+
-						'<td style="width:80%">'+
-							'<select class="form-control" size="1" id="'+ccap_list[i].key+'_select_part" onchange="changePart(\''+ccap_list[i].key+'\')">'+
-							'</select>'+
-						'</td>'+
-					'</tbody>'+
-				'</table>'+
-		}
-	}
+	$('#ccap-info').append(''+
+		'<div class="pull-left">'+
+			'<h5>'+ccap_list[i].name+'</h5>'+
+		'</div>'+
+		'<div class="pull-right">'+
+			'<a href="#/" class="btn btn-dark" onClick="addNew(\''+ccap_list[i].key+'\')"><i class="fa fa-fw fa-plus"></i></a>'+
+		'</div>'+
+		'<table class="table borderless">'+
+			'<thead>'+
+				'<tr>'+
+					'<th style="width:30%"></th>'+
+					'<th style="width:10%"></th>'+
+					'<th style="width:60%"></th>'+
+				'</tr>'+
+			'</thead>'+
+			'<tbody id="'+ccap_list[i].key+'">'+
+		'</table>'+
+		'<table class="table" id="'+ccap_list[i].key+'_select" style="display:none;">'+
+			'<tbody>'+
+				'<td style="width:20%">'+
+					'<select class="form-control" size="1" id="'+ccap_list[i].key+'_select_file" onchange="changeFile(\''+ccap_list[i].key+'\')">'+
+						'<option value="Choose one" selected>Choose one</option>'+
+					'</select>'+
+				'</td>'+
+				'<td style="width:80%">'+
+					'<select class="form-control" size="1" id="'+ccap_list[i].key+'_select_part" onchange="changePart(\''+ccap_list[i].key+'\')">'+
+					'</select>'+
+				'</td>'+
+			'</tbody>'+
+		'</table>');
 }
+	
+
 
 //Global Variable; textarea nr
 textAreaId=1;
-var list = [
-			{ value: 'controllerUS', name: 'controller Upstream-Cable'},
-			{ value: 'controllerDS', name: 'controller Integrated-Cable'},
-			{ value: 'cable', name: 'interface Cable'},
-			{ value: 'wideband', name: 'interface Wideband-Cable'},
-			{ value: 'fibernode', name: 'cable Fiber-Node'},
-			];
 //Add Global Data from Database to Page
 $(document).ready(function(){
 	$('#data_table').append(''+
 		'<tr>'+
-			'<td><div class="form-group"><input type="text" name="ccap_name" value="'+This_CCAP_configuration[0].name+'" class="form-control"></td></div>'+
-			'<td><div class="form-group"><input type="text" name="ccap_description" value="'+This_CCAP_configuration[0].description+'" class="form-control"></div></td>'+
-			'<td><div class="form-group"><input type="text" name="ccap_type" value="'+This_CCAP_configuration[0].type+'" class="form-control"></div></td>'+
+			'<td><input type="text" name="ccap_name" value="'+This_CCAP_configuration[0].name+'" class="form-control"></td>>'+
+			'<td><input type="text" name="ccap_description" value="'+This_CCAP_configuration[0].description+'" class="form-control"></td>'+
+			'<td><td><select name="ccap_type" id="type_'+This_CCAP_configuration[0].id+'" class="form-control"></select></td></td>'+
 		'</tr>');
+		select_list(This_CCAP_configuration[0].id, This_CCAP_configuration[0].type);
 	for (var j = 0; j < CCAP_configuration_new.length; j++) {
 		for (var i = 0; i < ccap_list.length; i++) {
 			$('#'+ccap_list[i].key+'_select_file').append('<option value="'+CCAP_configuration_new[j].id+'">'+CCAP_configuration_new[j].name+'</option>');
 		}
 	}
 })
+
+function select_list(id, selected) {
+	for (var i = 0; i < ccap_list.length; i++) {
+		$('#type_'+id).append('<option value="'+ccap_list[i].name+'" selected>'+ccap_list[i].name+'</option>');
+		if (selected==ccap_list[i].name) {
+			$('#type_'+id+' option[value="'+selected+'"]').attr('selected','selected');
+		}
+	}
+}
 //Add Parts Data from Database to Page
 			 -->
 $(document).ready(function(){
@@ -141,6 +144,8 @@ function changeFile(value) {
 	}
 
 }
+
+
 //Adding new TextAreas
 function changePart(value) {
 	//var mainTextArea = document.getElementById('mainTextArea');
